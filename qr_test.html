@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .qr-container {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>QR Code Generation Test</h2>
+
+    <div class="qr-container">
+        <h3>Method 1: CDN Library</h3>
+        <div id="qr1"></div>
+        <button onclick="testQR1()">Generate QR 1</button>
+    </div>
+
+    <div class="qr-container">
+        <h3>Method 2: Google API</h3>
+        <div id="qr2"></div>
+        <button onclick="testQR2()">Generate QR 2</button>
+    </div>
+
+    <div class="qr-container">
+        <h3>Method 3: Alternative CDN</h3>
+        <div id="qr3"></div>
+        <button onclick="testQR3()">Generate QR 3</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        function testQR1() {
+            const container = document.getElementById('qr1');
+            const canvas = document.createElement('canvas');
+            container.innerHTML = '';
+            container.appendChild(canvas);
+
+            const testData = 'MC:MIG-TEST-001|Test User|Bihar->Delhi|F:active|H:active|E:pending|$:active|2025-07-09';
+
+            if (typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(canvas, testData, {
+                    width: 200,
+                    height: 200,
+                    color: { dark: '#000000', light: '#ffffff' },
+                    errorCorrectionLevel: 'M'
+                }, function (error) {
+                    if (error) {
+                        container.innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                    } else {
+                        canvas.style.border = '2px solid green';
+                        console.log('QR 1 generated successfully');
+                    }
+                });
+            } else {
+                container.innerHTML = '<p style="color: red;">QRCode library not available</p>';
+            }
+        }
+
+        function testQR2() {
+            const container = document.getElementById('qr2');
+            const testData = 'MC:MIG-TEST-001|Test User|Bihar->Delhi|F:active|H:active|E:pending|$:active|2025-07-09';
+            const encodedData = encodeURIComponent(testData);
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedData}`;
+
+            container.innerHTML = `<img src="${qrUrl}" alt="QR Code" style="border: 2px solid blue;" onload="console.log('QR 2 loaded')" onerror="this.parentNode.innerHTML='<p style=\\'color: red;\\'>Google API failed</p>'">`;
+        }
+
+        function testQR3() {
+            const container = document.getElementById('qr3');
+            container.innerHTML = 'Loading alternative library...';
+
+            // Load QRious library
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
+            script.onload = function () {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const qr = new QRious({
+                        element: canvas,
+                        value: 'MC:MIG-TEST-001|Test User|Bihar->Delhi|F:active|H:active|E:pending|$:active|2025-07-09',
+                        size: 200,
+                        background: '#ffffff',
+                        foreground: '#000000'
+                    });
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                    canvas.style.border = '2px solid purple';
+                    console.log('QR 3 generated successfully');
+                } catch (error) {
+                    container.innerHTML = '<p style="color: red;">QRious error: ' + error.message + '</p>';
+                }
+            };
+            script.onerror = function () {
+                container.innerHTML = '<p style="color: red;">Failed to load QRious library</p>';
+            };
+            document.head.appendChild(script);
+        }
+
+        // Test on load
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('QRCode library available:', typeof QRCode !== 'undefined');
+            testQR1();
+            testQR2();
+        });
+    </script>
+</body>
+
+</html>

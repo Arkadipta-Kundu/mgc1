@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MigrantConnect - Login & Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body class="bg-light">
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="alert alert-warning text-center d-none">
+        <i class="fas fa-exclamation-triangle"></i> <span data-translate="offline_warning">⚠️ You're offline – showing
+            cached data</span>
+    </div>
+
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="row w-100">
+            <div class="col-md-6 col-lg-4 mx-auto">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">🏠 MigrantConnect</h2>
+                        <p class="mb-0 small" data-translate="login_subtitle">Your Gateway to Portable Services</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Login/Registration Toggle -->
+                        <ul class="nav nav-pills nav-fill mb-4" id="authTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="login-tab" data-bs-toggle="pill"
+                                    data-bs-target="#login" type="button" role="tab">
+                                    <i class="fas fa-sign-in-alt me-2"></i><span data-translate="login_tab">Login</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="register-tab" data-bs-toggle="pill"
+                                    data-bs-target="#register" type="button" role="tab">
+                                    <i class="fas fa-user-plus me-2"></i><span
+                                        data-translate="register_tab">Register</span>
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="authTabsContent">
+                            <!-- Login Form -->
+                            <div class="tab-pane fade show active" id="login" role="tabpanel">
+                                <form id="loginForm">
+                                    <div class="mb-3">
+                                        <label for="loginAadhaar" class="form-label" data-translate="aadhaar_label">
+                                            <i class="fas fa-id-card me-2"></i>Aadhaar Number
+                                        </label>
+                                        <input type="text" class="form-control" id="loginAadhaar"
+                                            placeholder="1234 5678 9012" maxlength="14" required>
+                                        <div class="form-text" data-translate="aadhaar_help">Enter your 12-digit Aadhaar
+                                            number</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="loginPassword" class="form-label" data-translate="password_label">
+                                            <i class="fas fa-lock me-2"></i>Password
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="loginPassword" required>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                id="toggleLoginPassword" title="Toggle password visibility">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="language" class="form-label" data-translate="language_label">
+                                            <i class="fas fa-language me-2"></i>Preferred Language
+                                        </label>
+                                        <select class="form-select" id="language">
+                                            <option value="en">English</option>
+                                            <option value="hi">हिंदी</option>
+                                            <option value="bn">বাংলা</option>
+                                            <option value="te">తెలుగు</option>
+                                            <option value="ta">தமிழ்</option>
+                                            <option value="mr">मराठी</option>
+                                            <option value="gu">ગુજરાતી</option>
+                                            <option value="kn">ಕನ್ನಡ</option>
+                                            <option value="ml">മലയാളം</option>
+                                            <option value="pa">ਪੰਜਾਬੀ</option>
+                                            <option value="or">ଓଡ଼ିଆ</option>
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100 mb-3" id="loginBtn">
+                                        <i class="fas fa-sign-in-alt me-2"></i><span
+                                            data-translate="login_button">Login</span>
+                                    </button>
+
+                                    <div class="text-center">
+                                        <small class="text-muted">
+                                            <span data-translate="demo_credentials">Demo: Use Aadhaar 123456789012 with
+                                                password 'demo123'</span>
+                                        </small>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Registration Form -->
+                            <div class="tab-pane fade" id="register" role="tabpanel">
+                                <form id="registerForm">
+                                    <div class="mb-3">
+                                        <label for="regFullName" class="form-label" data-translate="full_name_label">
+                                            <i class="fas fa-user me-2"></i>Full Name
+                                        </label>
+                                        <input type="text" class="form-control" id="regFullName" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="regAadhaar" class="form-label" data-translate="aadhaar_label">
+                                            <i class="fas fa-id-card me-2"></i>Aadhaar Number
+                                        </label>
+                                        <input type="text" class="form-control" id="regAadhaar"
+                                            placeholder="1234 5678 9012" maxlength="14" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="regPassword" class="form-label" data-translate="password_label">
+                                            <i class="fas fa-lock me-2"></i>Password
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="regPassword" minlength="6"
+                                                required>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                id="toggleRegPassword" title="Toggle password visibility">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-text" data-translate="password_help">Minimum 6 characters</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="regPhone" class="form-label" data-translate="phone_label">
+                                            <i class="fas fa-phone me-2"></i>Phone Number
+                                        </label>
+                                        <input type="tel" class="form-control" id="regPhone"
+                                            placeholder="+91 98765 43210" required>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="regHomeState" class="form-label"
+                                                data-translate="home_state_label">
+                                                <i class="fas fa-home me-2"></i>Home State
+                                            </label>
+                                            <select class="form-select" id="regHomeState" required>
+                                                <option value="">Select State</option>
+                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="regCurrentState" class="form-label"
+                                                data-translate="current_state_label">
+                                                <i class="fas fa-map-marker-alt me-2"></i>Current State
+                                            </label>
+                                            <select class="form-select" id="regCurrentState" required>
+                                                <option value="">Select State</option>
+                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success w-100 mb-3" id="registerBtn">
+                                        <i class="fas fa-user-plus me-2"></i><span
+                                            data-translate="register_button">Create Account</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center text-light">
+                        <small data-translate="footer_text">Bridging Services Across States</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5><i class="fas fa-info-circle text-primary me-2"></i><span data-translate="footer_about">About
+                            MigrantConnect</span></h5>
+                    <p class="text-light small" data-translate="footer_about_desc">
+                        Empowering India's internal migrant workers with seamless access to essential services across
+                        states.
+                        Making benefits truly portable and accessible for all.
+                    </p>
+                    <div class="mt-3">
+                        <span class="badge bg-primary me-2" data-translate="footer_gov_initiative">Government of India
+                            Initiative</span>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-4">
+                    <h6><i class="fas fa-link text-primary me-2"></i><span data-translate="footer_quick_links">Quick
+                            Links</span></h6>
+                    <ul class="list-unstyled">
+                        <li><a href="dashboard.html" class="text-light text-decoration-none small">Dashboard</a></li>
+                        <li><a href="food.html" class="text-light text-decoration-none small">Food Benefits</a></li>
+                        <li><a href="health.html" class="text-light text-decoration-none small">Healthcare</a></li>
+                        <li><a href="education.html" class="text-light text-decoration-none small">Education</a></li>
+                        <li><a href="finance.html" class="text-light text-decoration-none small">Finance</a></li>
+                        <li><a href="qr.html" class="text-light text-decoration-none small">QR Identity</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-2 mb-4">
+                    <h6><i class="fas fa-cog text-primary me-2"></i><span
+                            data-translate="footer_services">Services</span></h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_privacy">Privacy Policy</a></li>
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_terms">Terms of Service</a></li>
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_accessibility">Accessibility</a></li>
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_feedback">Feedback</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h6><i class="fas fa-phone text-primary me-2"></i><span data-translate="footer_contact">Contact
+                            Info</span></h6>
+                    <div class="text-light small">
+                        <p class="mb-2">
+                            <i class="fas fa-headset me-2"></i>
+                            <span data-translate="footer_helpline">National Helpline</span>:
+                            <a href="tel:1800-XXX-XXXX" class="text-primary text-decoration-none">1800-XXX-XXXX</a>
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            <span data-translate="footer_email">Email Support</span>:
+                            <a href="mailto:support@migrantconnect.gov.in"
+                                class="text-primary text-decoration-none">support@migrantconnect.gov.in</a>
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-globe me-2"></i>
+                            <span data-translate="footer_website">Official Website</span>:
+                            <a href="#" class="text-primary text-decoration-none">www.migrantconnect.gov.in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row align-items-center">
+                <div class="col-12 text-center">
+                    <p class="mb-0 text-light small">
+                        <span data-translate="footer_copyright">© 2025 MigrantConnect. All rights reserved.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <!-- Enhanced JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/language.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

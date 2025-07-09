@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MigrantConnect - Financial Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body class="bg-light">
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="alert alert-warning text-center d-none">
+        <i class="fas fa-exclamation-triangle"></i> <span data-translate="offline_warning">⚠️ You're offline – showing
+            cached data</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">🏠 MigrantConnect</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
+                        data-bs-toggle="dropdown">
+                        <i class="fas fa-globe"></i> <span data-translate="language">Language</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi')">हिंदी</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('bn')">বাংলা</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('te')">తెలుగు</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('ta')">தமிழ்</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr')">मराठी</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('gu')">ગુજરાતી</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('kn')">ಕನ್ನಡ</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('ml')">മലയാളം</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('pa')">ਪੰਜਾਬੀ</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('or')">ଓଡ଼ିଆ</a></li>
+                    </ul>
+                </div>
+                <a class="nav-link" href="dashboard.html" data-translate="back_to_dashboard">Back to Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="benefit-icon-large me-3">💰</div>
+                    <div>
+                        <h2 data-translate="finance_benefits">Financial Services</h2>
+                        <p class="text-muted mb-0" data-translate="finance_subtitle">Banking & Financial Assistance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Benefit Information -->
+            <div class="col-md-8">
+                <!-- Account Details -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0" data-translate="account_details">Account Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 data-translate="primary_account">Primary Account:</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong data-translate="bank_name">Bank:</strong> State Bank of India</li>
+                                    <li><strong data-translate="account_number">Account No:</strong> ****1234</li>
+                                    <li><strong data-translate="ifsc_code">IFSC:</strong> SBIN0001234</li>
+                                    <li><strong data-translate="balance">Balance:</strong> ₹15,450</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 data-translate="benefits_received">Benefits Received:</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong data-translate="pm_kisan">PM-KISAN:</strong> ₹6,000/year</li>
+                                    <li><strong data-translate="pension">Pension:</strong> ₹1,200/month</li>
+                                    <li><strong data-translate="insurance">Insurance:</strong> ₹2,00,000 cover</li>
+                                    <li><strong data-translate="loans">Loans:</strong> ₹50,000 available</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0" data-translate="recent_transactions">Recent Transactions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th data-translate="date">Date</th>
+                                        <th data-translate="description">Description</th>
+                                        <th data-translate="type">Type</th>
+                                        <th data-translate="amount">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>20 Dec 2024</td>
+                                        <td>PM-KISAN Payment</td>
+                                        <td><span class="badge bg-success">Credit</span></td>
+                                        <td>+₹2,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15 Dec 2024</td>
+                                        <td>Pension Payment</td>
+                                        <td><span class="badge bg-success">Credit</span></td>
+                                        <td>+₹1,200</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10 Dec 2024</td>
+                                        <td>Money Transfer to Family</td>
+                                        <td><span class="badge bg-danger">Debit</span></td>
+                                        <td>-₹5,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05 Dec 2024</td>
+                                        <td>Micro Loan EMI</td>
+                                        <td><span class="badge bg-danger">Debit</span></td>
+                                        <td>-₹850</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Services -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0" data-translate="available_services">Available Services</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span data-translate="zero_balance_account">Zero Balance Account</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span data-translate="money_transfer">Money Transfer</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span data-translate="micro_loans">Micro Loans</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span data-translate="insurance_schemes">Insurance Schemes</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span data-translate="pension_schemes">Pension Schemes</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span data-translate="digital_payments">Digital Payments</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Panel -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0" data-translate="quick_actions">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="checkBalance()" data-translate="check_balance">
+                                <i class="fas fa-wallet"></i> Check Balance
+                            </button>
+                            <button class="btn btn-success" onclick="transferMoney()" data-translate="transfer_money">
+                                <i class="fas fa-exchange-alt"></i> Transfer Money
+                            </button>
+                            <button class="btn btn-info" onclick="applyForLoan()" data-translate="apply_loan">
+                                <i class="fas fa-hand-holding-usd"></i> Apply for Loan
+                            </button>
+                            <button class="btn btn-warning" onclick="findNearestBank()" data-translate="find_bank">
+                                <i class="fas fa-university"></i> Find Nearest Bank
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0" data-translate="need_help">Need Help?</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-2"><strong data-translate="helpline">Helpline:</strong> 1800-11-2211</p>
+                        <p class="small mb-2"><strong data-translate="website">Website:</strong> <a href="#"
+                                target="_blank">pmjdy.gov.in</a></p>
+                        <p class="small mb-0"><strong data-translate="email">Email:</strong> pmjdy@gov.in</p>
+                    </div>
+                </div>
+
+                <!-- Financial Literacy -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0" data-translate="financial_literacy">Financial Literacy</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-2" data-translate="literacy_description">Learn about financial planning and
+                            savings</p>
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="accessLiteracy()"
+                            data-translate="access_resources">
+                            Access Resources
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Investment Options -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0" data-translate="investment_options">Investment Options</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-2" data-translate="investment_description">Explore safe investment options
+                        </p>
+                        <button class="btn btn-outline-success btn-sm w-100" onclick="exploreInvestments()"
+                            data-translate="explore_investments">
+                            Explore Investments
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5><i class="fas fa-info-circle text-primary me-2"></i><span data-translate="footer_about">About
+                            MigrantConnect</span></h5>
+                    <p class="text-light small" data-translate="footer_about_desc">
+                        Empowering India's internal migrant workers with seamless access to essential services across
+                        states.
+                        Making benefits truly portable and accessible for all.
+                    </p>
+                    <div class="mt-3">
+                        <span class="badge bg-primary me-2" data-translate="footer_gov_initiative">Government of India
+                            Initiative</span>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-4">
+                    <h6><i class="fas fa-link text-primary me-2"></i><span data-translate="footer_quick_links">Quick
+                            Links</span></h6>
+                    <ul class="list-unstyled">
+                        <li><a href="dashboard.html" class="text-light text-decoration-none small">Dashboard</a></li>
+                        <li><a href="food.html" class="text-light text-decoration-none small">Food Benefits</a></li>
+                        <li><a href="health.html" class="text-light text-decoration-none small">Healthcare</a></li>
+                        <li><a href="education.html" class="text-light text-decoration-none small">Education</a></li>
+                        <li><a href="finance.html" class="text-light text-decoration-none small">Finance</a></li>
+                        <li><a href="qr.html" class="text-light text-decoration-none small">QR Identity</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-2 mb-4">
+                    <h6><i class="fas fa-cog text-primary me-2"></i><span
+                            data-translate="footer_services">Services</span></h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_privacy">Privacy Policy</a></li>
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_terms">Terms of Service</a></li>
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_accessibility">Accessibility</a></li>
+                        <li><a href="#" class="text-light text-decoration-none small"
+                                data-translate="footer_feedback">Feedback</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h6><i class="fas fa-phone text-primary me-2"></i><span data-translate="footer_contact">Contact
+                            Info</span></h6>
+                    <div class="text-light small">
+                        <p class="mb-2">
+                            <i class="fas fa-headset me-2"></i>
+                            <span data-translate="footer_helpline">National Helpline</span>:
+                            <a href="tel:1800-XXX-XXXX" class="text-primary text-decoration-none">1800-XXX-XXXX</a>
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            <span data-translate="footer_email">Email Support</span>:
+                            <a href="mailto:support@migrantconnect.gov.in"
+                                class="text-primary text-decoration-none">support@migrantconnect.gov.in</a>
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-globe me-2"></i>
+                            <span data-translate="footer_website">Official Website</span>:
+                            <a href="#" class="text-primary text-decoration-none">www.migrantconnect.gov.in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-light small">
+                        <span data-translate="footer_copyright">© 2025 MigrantConnect. All rights reserved.</span>
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-light">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        <span data-translate="footer_secure">Secure Government Platform</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="assets/js/language.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
