@@ -12,6 +12,10 @@ const educationRoute = require('./routes/education');
 const financeRoute = require('./routes/finance');
 const authRoute = require('./routes/auth');
 
+// Import BECKN and Blockchain integrations
+const becknRoute = require('./beckn-integration');
+const { blockchainRouter, migrantBlockchain } = require('./blockchain-integration');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -31,12 +35,20 @@ app.use('/api/health', healthRoute);
 app.use('/api/education', educationRoute);
 app.use('/api/finance', financeRoute);
 
+// 🌐 BECKN Protocol Integration Routes
+app.use('/api/beckn', becknRoute);
+
+// ⛓️ Blockchain Integration Routes
+app.use('/api/blockchain', blockchainRouter);
+
 // API endpoint to test database connection
 app.get('/api/status', async (req, res) => {
     const dbConnected = await testConnection();
     res.json({
         status: 'Server running',
         database: dbConnected ? 'Connected' : 'Disconnected',
+        blockchain: migrantBlockchain.isChainValid() ? 'Valid' : 'Invalid',
+        beckn_enabled: true,
         timestamp: new Date().toISOString()
     });
 });
@@ -81,6 +93,10 @@ app.listen(PORT, async () => {
     console.log(`🚀 MigrantConnect server is running on http://localhost:${PORT}`);
     console.log(`📊 API Status: http://localhost:${PORT}/api/status`);
 
+    // Initialize blockchain from database
+    await migrantBlockchain.loadFromDatabase();
+    console.log(`⛓️ Blockchain initialized with ${migrantBlockchain.chain.length} blocks`);
+
     // Test database connection
     const dbConnected = await testConnection();
     if (dbConnected) {
@@ -94,10 +110,22 @@ app.listen(PORT, async () => {
         console.log(`     • GET /api/health/:migrant_id - Get health benefits`);
         console.log(`     • GET /api/education/:migrant_id - Get education benefits`);
         console.log(`     • GET /api/finance/:migrant_id - Get finance benefits`);
+        console.log(`   🌐 BECKN Protocol Endpoints:`);
+        console.log(`     • POST /api/beckn/search - Discover services`);
+        console.log(`     • POST /api/beckn/select - Select service`);
+        console.log(`     • POST /api/beckn/confirm - Confirm service usage`);
+        console.log(`     • POST /api/beckn/status - Check service status`);
+        console.log(`   ⛓️ Blockchain Endpoints:`);
+        console.log(`     • POST /api/blockchain/identity/:migrant_id - Add to blockchain`);
+        console.log(`     • POST /api/blockchain/transaction/:migrant_id - Log transaction`);
+        console.log(`     • GET /api/blockchain/history/:migrant_id - Get blockchain history`);
+        console.log(`     • GET /api/blockchain/verify - Verify blockchain integrity`);
+        console.log(`     • POST /api/blockchain/qr/:migrant_id - Generate blockchain QR`);
     } else {
         console.log(`❌ Database connection failed. Please check your MySQL setup.`);
         console.log(`   1. Make sure MySQL is running`);
         console.log(`   2. Update .env file with correct database credentials`);
         console.log(`   3. Run the database_setup.sql script`);
+        console.log(`   4. Run the blockchain_beckn_schema.sql script for new features`);
     }
 });
