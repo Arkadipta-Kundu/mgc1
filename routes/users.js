@@ -14,6 +14,61 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get user by Aadhaar number (used for fetching current user data)
+// This route MUST be before the migrant_id route to be matched correctly
+router.get('/by-aadhaar/:aadhaar', async (req, res) => {
+    try {
+        const { aadhaar } = req.params;
+
+        // Validate the input to prevent SQL injection
+        if (!aadhaar || aadhaar.length !== 12 || !/^\d+$/.test(aadhaar)) {
+            return res.status(400).json({ error: 'Invalid Aadhaar format' });
+        }
+
+        const [userRows] = await pool.execute(
+            'SELECT * FROM users WHERE aadhaar = ? AND is_active = TRUE',
+            [aadhaar]
+        );
+
+        if (userRows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Get user benefits
+        const [benefitRows] = await pool.execute(
+            'SELECT * FROM benefits WHERE user_id = ?',
+            [userRows[0].id]
+        );
+
+        // Format benefits
+        const benefits = {};
+        benefitRows.forEach(benefit => {
+            benefits[benefit.benefit_type] = {
+                status: benefit.status,
+                usage: benefit.usage_percentage
+            };
+        });
+
+        // Format user data to match frontend expectations
+        const userData = {
+            name: userRows[0].name,
+            id: userRows[0].migrant_id,
+            homeState: userRows[0].home_state,
+            currentState: userRows[0].current_state,
+            phone: userRows[0].phone,
+            aadhaar: userRows[0].aadhaar,
+            home_state: userRows[0].home_state,
+            current_state: userRows[0].current_state,
+            benefits: benefits
+        };
+
+        res.json(userData);
+    } catch (error) {
+        console.error('Error fetching user by Aadhaar:', error);
+        res.status(500).json({ error: 'Failed to fetch user' });
+    }
+});
+
 // Get user by migrant_id
 router.get('/:migrant_id', async (req, res) => {
     try {

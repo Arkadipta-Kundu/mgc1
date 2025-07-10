@@ -79,9 +79,9 @@ INSERT INTO education_benefits (user_id, children_count, scholarship_amount) VAL
 
 -- Insert detailed finance benefits
 INSERT INTO finance_benefits (user_id, bank_account, current_loan, credit_score) VALUES
-(1, 'SBI****0123', 25000.00, 720),
-(2, 'HDFC****1234', 15000.00, 680),
-(3, 'ICICI****2345', 0.00, 650),
-(4, 'PNB****3456', 30000.00, 700),
-(5, 'AXIS****4567', 18000.00, 660),
-(6, 'BOI****5678', 35000.00, 740);
+(1, 'SBI00120123', 25000.00, 720),
+(2, 'HDFC00231234', 15000.00, 680),
+(3, 'ICICI00342345', 0.00, 650),
+(4, 'PNB00453456', 30000.00, 700),
+(5, 'AXIS00564567', 18000.00, 660),
+(6, 'BOI00675678', 35000.00, 740);

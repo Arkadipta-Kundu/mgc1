@@ -284,16 +284,21 @@ async function handleLogin(e) {
         const sessionToken = data.token;
         const userId = data.user.id;
 
+        // Store the Aadhaar number for easy access and fetching user data
+        const userAadhaar = aadhaar; // Store the clean Aadhaar number
+
         // New method with expiry (if utils available)
         if (typeof StorageUtils !== 'undefined') {
             StorageUtils.setWithExpiry('sessionToken', sessionToken, 24 * 60 * 60 * 1000); // 24 hours
             StorageUtils.setWithExpiry('currentUser', userId, 24 * 60 * 60 * 1000);
+            StorageUtils.setWithExpiry('userAadhaar', userAadhaar, 24 * 60 * 60 * 1000);
             StorageUtils.setWithExpiry('cachedUserData', data.user, 24 * 60 * 60 * 1000);
         }
 
         // Fallback method (always store for compatibility)
         localStorage.setItem('sessionToken', sessionToken);
         localStorage.setItem('currentUser', userId);
+        localStorage.setItem('userAadhaar', userAadhaar); // Store Aadhaar in local storage too
         localStorage.setItem('selectedLanguage', language);
 
         currentUserData = data.user;
@@ -401,20 +406,43 @@ async function initializeDashboard() {
     const isAuth = await checkAuth();
     if (!isAuth) return;
 
-    if (currentUserData) {
+    console.log('Initializing dashboard, currentUserData:', currentUserData);
+
+    if (currentUserData && currentUserData.name) {
+        console.log('Using existing user data for dashboard');
         updateWelcomeMessage(currentUserData);
         updateBenefitCards(currentUserData);
 
         // Cache user data for offline access
-        StorageUtils.setWithExpiry('cachedUserData', currentUserData, 24 * 60 * 60 * 1000);
+        if (typeof StorageUtils !== 'undefined') {
+            StorageUtils.setWithExpiry('cachedUserData', currentUserData, 24 * 60 * 60 * 1000);
+        }
 
         // Create charts if Chart.js is available
         if (typeof Chart !== 'undefined') {
             createBenefitsChart();
         }
     } else {
-        // Fetch user data if not available
-        await fetchUserData();
+        console.log('Fetching fresh user data for dashboard');
+        // Fetch fresh user details directly from database
+        try {
+            await fetchUserDetails();
+        } catch (error) {
+            console.error('Error in dashboard initialization:', error);
+            // Try to use cached data as fallback
+            if (typeof StorageUtils !== 'undefined') {
+                const cachedData = StorageUtils.getWithExpiry('cachedUserData');
+                if (cachedData) {
+                    console.log('Using cached data as fallback');
+                    currentUserData = cachedData;
+                    updateWelcomeMessage(currentUserData);
+                    updateBenefitCards(currentUserData);
+                    showOfflineBanner();
+                } else {
+                    showAlert('Error loading user data. Please refresh the page.', 'error');
+                }
+            }
+        }
     }
 }
 
@@ -511,6 +539,7 @@ async function handleLogout() {
     console.log('🧹 Clearing local storage...');
     localStorage.removeItem('sessionToken');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('userAadhaar'); // Clear stored Aadhaar number
     localStorage.removeItem('selectedLanguage');
 
     // Clear cached data if utils available
@@ -524,17 +553,129 @@ async function handleLogout() {
     window.location.href = 'index.html';
 }
 
-// Update welcome message
+// Update welcome message - simplified to only show the user's name
 function updateWelcomeMessage(userData) {
+    console.log('Updating welcome message with user data:', userData);
     const welcomeMessage = document.getElementById('welcomeMessage');
     const userLocation = document.getElementById('userLocation');
 
-    if (welcomeMessage) {
-        welcomeMessage.textContent = `Welcome ${userData.name}! 👋`;
+    // Make sure we have userData before trying to access properties
+    if (!userData) {
+        console.error('No user data provided to updateWelcomeMessage');
+        // Try to fetch directly from the backend
+        fetchUserDetails();
+        return;
     }
 
+    if (welcomeMessage) {
+        // Include the user's name directly in the welcome message heading
+        welcomeMessage.textContent = `Welcome Back, ${userData.name}! 👋`;
+        console.log('Welcome message updated with name:', userData.name);
+    } else {
+        console.warn('Welcome message element not found in the DOM');
+    }
+
+    // Hide the user location element as we only want to show the name
     if (userLocation) {
-        userLocation.textContent = `From ${userData.home_state}, currently in ${userData.current_state}`;
+        userLocation.style.display = 'none';
+    }
+}
+
+// Fetch user details directly from the database using Aadhaar number
+async function fetchUserDetails() {
+    console.log('Fetching user details directly from database');
+    const sessionToken = localStorage.getItem('sessionToken');
+    const userAadhaar = localStorage.getItem('userAadhaar') ||
+        (typeof StorageUtils !== 'undefined' ? StorageUtils.getWithExpiry('userAadhaar') : null);
+
+    if (!sessionToken) {
+        console.error('No session token found, cannot fetch user details');
+        return;
+    }
+
+    try {
+        let response;
+
+        if (userAadhaar) {
+            console.log('Fetching user details using Aadhaar:', userAadhaar);
+            // Use direct fetch with Aadhaar if available
+            response = await fetch(`${API_BASE_URL}/users/by-aadhaar/${userAadhaar}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // If the Aadhaar endpoint doesn't exist or fails, fall back to the standard verification
+            if (!response.ok) {
+                console.log('Aadhaar endpoint failed, falling back to verification endpoint');
+                response = await fetch(`${API_BASE_URL}/auth/verify`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
+        } else {
+            // Standard verification endpoint as fallback
+            response = await fetch(`${API_BASE_URL}/auth/verify`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user details');
+        }
+
+        const data = await response.json();
+
+        // Handle different response formats depending on endpoint
+        if (data.user) {
+            currentUserData = data.user;
+        } else {
+            // If directly fetched from users endpoint, the data might be structured differently
+            currentUserData = data;
+        }
+
+        console.log('Successfully fetched user data:', currentUserData);
+
+        // Cache the fresh data
+        if (typeof StorageUtils !== 'undefined') {
+            StorageUtils.setWithExpiry('cachedUserData', currentUserData, 24 * 60 * 60 * 1000);
+        }
+
+        // Update UI with fresh data
+        updateWelcomeMessage(currentUserData);
+        updateBenefitCards(currentUserData);
+
+        // If on QR page, update QR info
+        if (window.location.pathname.includes('qr.html')) {
+            updateQRUserInfo(currentUserData);
+            generateQRCode(currentUserData);
+        }
+
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        // Try to use cached data as fallback
+        if (typeof StorageUtils !== 'undefined') {
+            const cachedData = StorageUtils.getWithExpiry('cachedUserData');
+            if (cachedData) {
+                console.log('Using cached data as fallback');
+                currentUserData = cachedData;
+                updateWelcomeMessage(currentUserData);
+                updateBenefitCards(currentUserData);
+                if (window.location.pathname.includes('qr.html')) {
+                    updateQRUserInfo(currentUserData);
+                    generateQRCode(currentUserData);
+                }
+            }
+        }
     }
 }
 
@@ -561,30 +702,61 @@ async function initializeQRPage() {
     const isAuth = await checkAuth();
     if (!isAuth) return;
 
-    if (currentUserData) {
+    console.log('Initializing QR page, currentUserData:', currentUserData);
+
+    if (currentUserData && currentUserData.name && currentUserData.home_state && currentUserData.current_state) {
+        console.log('Using existing user data for QR page');
         updateQRUserInfo(currentUserData);
         generateQRCode(currentUserData);
     } else {
-        // Fetch user data if not available
-        await fetchUserData();
-        if (currentUserData) {
-            updateQRUserInfo(currentUserData);
-            generateQRCode(currentUserData);
+        console.log('Fetching fresh user data for QR page');
+        // Fetch fresh user details directly from database
+        try {
+            await fetchUserDetails();
+            if (currentUserData) {
+                updateQRUserInfo(currentUserData);
+                generateQRCode(currentUserData);
+            } else {
+                console.error('Failed to fetch user data for QR page');
+                showAlert('Error loading user data. Please refresh the page.', 'error');
+            }
+        } catch (error) {
+            console.error('Error in QR page initialization:', error);
         }
     }
 }
 
 // Update QR page user information
 function updateQRUserInfo(userData) {
+    console.log('Updating QR user info with:', userData);
     const qrUserName = document.getElementById('qr-user-name');
     const qrUserId = document.getElementById('qr-user-id');
     const qrUserLocation = document.getElementById('qr-user-location');
     const qrIssueDate = document.getElementById('qr-issue-date');
     const qrExpiryDate = document.getElementById('qr-expiry-date');
 
-    if (qrUserName) qrUserName.textContent = userData.name;
-    if (qrUserId) qrUserId.textContent = `ID: ${userData.migrant_id || userData.id}`;
-    if (qrUserLocation) qrUserLocation.textContent = `From: ${userData.home_state}, Currently in: ${userData.current_state}`;
+    // Make sure we have userData before trying to access properties
+    if (!userData) {
+        console.error('No user data provided to updateQRUserInfo');
+        return;
+    }
+
+    // Directly access the name field
+    if (qrUserName) {
+        qrUserName.textContent = userData.name;
+        console.log('QR name updated with:', userData.name);
+    }
+
+    // Use migrant_id if available, otherwise fall back to id
+    if (qrUserId) {
+        qrUserId.textContent = `ID: ${userData.migrant_id || userData.id}`;
+    }
+
+    // Directly use home_state and current_state for location
+    if (qrUserLocation) {
+        qrUserLocation.textContent = `From: ${userData.home_state}, Currently in: ${userData.current_state}`;
+        console.log('QR location updated with states:', userData.home_state, userData.current_state);
+    }
 
     // Set dates
     const issueDate = new Date();
