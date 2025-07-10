@@ -182,7 +182,14 @@ router.post('/register', async (req, res) => {
 // Logout
 router.post('/logout', async (req, res) => {
     try {
-        const { sessionToken } = req.body;
+        let sessionToken;
+
+        // Get token from Authorization header or request body
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+            sessionToken = req.headers.authorization.substring(7);
+        } else if (req.body && req.body.sessionToken) {
+            sessionToken = req.body.sessionToken;
+        }
 
         if (sessionToken) {
             await pool.execute(
@@ -205,7 +212,7 @@ router.post('/verify', verifySession);
 async function verifySession(req, res) {
     try {
         let sessionToken;
-        
+
         // Get token from Authorization header or request body
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
             sessionToken = req.headers.authorization.substring(7);

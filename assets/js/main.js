@@ -47,6 +47,9 @@ function initializeApp() {
         initializeBenefitPage();
     }
 
+    // Setup logout functionality for all pages that have logout buttons
+    setupLogoutButton();
+
     // Set up offline/online event listeners
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -413,9 +416,6 @@ async function initializeDashboard() {
         // Fetch user data if not available
         await fetchUserData();
     }
-
-    // Add logout functionality
-    setupLogoutButton();
 }
 
 // Enhanced fetch user data
@@ -468,33 +468,58 @@ function createBenefitsChart() {
 function setupLogoutButton() {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
+        console.log('✅ Logout button found, setting up event listener');
+        logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            console.log('🚪 Logout button clicked');
+            handleLogout();
+        });
+    } else {
+        console.log('❌ Logout button not found on this page');
     }
 }
 
 // Handle logout
 async function handleLogout() {
+    console.log('🚪 Starting logout process...');
     const sessionToken = localStorage.getItem('sessionToken');
+    console.log('🔑 Session token found:', sessionToken ? 'Yes' : 'No');
 
     if (sessionToken) {
         try {
-            await fetch(`${API_BASE_URL}/auth/logout`, {
+            console.log('📡 Sending logout request to server...');
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${sessionToken}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ sessionToken })
             });
+
+            if (response.ok) {
+                console.log('✅ Server logout successful');
+            } else {
+                console.log('⚠️ Server logout failed, but continuing with local cleanup');
+            }
         } catch (error) {
-            console.error('Logout error:', error);
+            console.error('❌ Logout error:', error);
+            console.log('⚠️ Server error, but continuing with local cleanup');
         }
     }
 
     // Clear local storage
+    console.log('🧹 Clearing local storage...');
     localStorage.removeItem('sessionToken');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('selectedLanguage');
 
+    // Clear cached data if utils available
+    if (typeof StorageUtils !== 'undefined') {
+        StorageUtils.clearAppData();
+        console.log('🧹 StorageUtils cleared');
+    }
+
+    console.log('↩️ Redirecting to login page...');
     // Redirect to login
     window.location.href = 'index.html';
 }
