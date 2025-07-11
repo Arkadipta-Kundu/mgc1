@@ -769,19 +769,119 @@ function updateQRUserInfo(userData) {
 // Generate QR Code with multiple fallback methods
 function generateQRCode(userData) {
     console.log('Starting QR generation for:', userData.name);
-    generateQRCodeEnhanced(userData);
+    generateBlockchainVerifiedQR(userData);
+}
+
+// Generate blockchain-verified QR code
+async function generateBlockchainVerifiedQR(userData) {
+    const qrCodeDiv = document.getElementById('qrcode');
+    if (!qrCodeDiv) return;
+
+    // Show loading state
+    qrCodeDiv.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i><br>Generating Blockchain-Verified QR...</div>';
+
+    try {
+        // First, try to get blockchain-verified QR from server
+        const response = await fetch(`${API_BASE_URL}/blockchain/qr/${userData.migrant_id || userData.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Blockchain-verified QR generated');
+
+            // Parse the blockchain QR data
+            const blockchainQRData = JSON.parse(result.qr_data);
+
+            // Update QR info display with blockchain verification
+            updateQRInfoWithBlockchain(blockchainQRData, result.blockchain_hash);
+
+            // Generate the actual QR code with blockchain data
+            generateQRCodeEnhanced(userData, result.qr_data, true, result.blockchain_hash);
+
+        } else {
+            console.warn('Blockchain QR generation failed, falling back to standard QR');
+            generateQRCodeEnhanced(userData);
+        }
+    } catch (error) {
+        console.error('Blockchain QR generation error:', error);
+        console.warn('Falling back to standard QR generation');
+        generateQRCodeEnhanced(userData);
+    }
+}
+
+// Add blockchain verification badge to QR code
+function addBlockchainVerificationBadge(container, blockchainHash) {
+    const badge = document.createElement('div');
+    badge.style.cssText = `
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #28a745;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        z-index: 10;
+    `;
+    badge.innerHTML = '<i class="fas fa-shield-alt"></i> VERIFIED';
+    badge.title = `Blockchain Hash: ${blockchainHash ? blockchainHash.slice(0, 16) + '...' : 'N/A'}`;
+
+    // Make container relative if not already
+    if (container.style.position !== 'relative') {
+        container.style.position = 'relative';
+    }
+
+    container.appendChild(badge);
+}
+
+// Update QR info display with blockchain verification details
+function updateQRInfoWithBlockchain(blockchainQRData, blockchainHash) {
+    const qrInfo = document.getElementById('qr-info');
+    if (!qrInfo) return;
+
+    try {
+        // Parse blockchain data if it's a string
+        const qrData = typeof blockchainQRData === 'string' ? JSON.parse(blockchainQRData) : blockchainQRData;
+
+        // Update QR info with blockchain verification status
+        const verificationBadge = `
+            <div class="alert alert-success mt-3" style="border-left: 4px solid #28a745;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-shield-alt text-success me-2"></i>
+                    <div>
+                        <strong>Blockchain Verified</strong>
+                        <small class="d-block text-muted">Hash: ${blockchainHash ? blockchainHash.slice(0, 16) + '...' : 'N/A'}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add verification badge to existing info
+        qrInfo.innerHTML += verificationBadge;
+
+        console.log('✅ QR info updated with blockchain verification');
+    } catch (error) {
+        console.error('Error updating QR info with blockchain data:', error);
+    }
 }
 
 // Alternative QR generation using Google Charts API (fallback)
-function generateQRWithGoogleAPI(container, data, userData) {
+function generateQRWithGoogleAPI(container, data, userData, isBlockchainVerified = false, blockchainHash = null) {
     const encodedData = encodeURIComponent(data);
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedData}`;
+
+    const borderColor = isBlockchainVerified ? '#28a745' : '#007bff';
+    const borderWidth = isBlockchainVerified ? '3px' : '2px';
 
     container.innerHTML = `
         <div style="position: relative; display: inline-block;">
             <img src="${qrUrl}" 
                  alt="QR Code for ${userData.name}" 
-                 style="width: 200px; height: 200px; border: 2px solid #007bff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                 style="width: 200px; height: 200px; border: ${borderWidth} solid ${borderColor}; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
                  onload="console.log('QR image loaded successfully')"
                  onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\\'width: 200px; height: 200px; border: 2px solid #dc3545; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px;\\'>\\
                     <div style=\\'text-align: center; padding: 20px;\\'>\\
@@ -792,18 +892,34 @@ function generateQRWithGoogleAPI(container, data, userData) {
                 </div>';">
         </div>
     `;
+
+    // Add blockchain verification badge if applicable
+    if (isBlockchainVerified) {
+        setTimeout(() => {
+            addBlockchainVerificationBadge(container, blockchainHash);
+        }, 100);
+    }
 }
 
-// Enhanced QR generation with multiple fallbacks
-function generateQRCodeEnhanced(userData) {
+// Enhanced QR generation with multiple fallbacks and blockchain support
+function generateQRCodeEnhanced(userData, blockchainData = null, isBlockchainVerified = false, blockchainHash = null) {
     const qrCodeDiv = document.getElementById('qrcode');
     if (!qrCodeDiv) return;
 
     // Clear existing content
     qrCodeDiv.innerHTML = '<div style="text-align: center; padding: 20px;">Generating QR Code...</div>';
 
-    // Create compact QR data with new user structure
-    const qrString = `MC:${userData.migrant_id || userData.id}|${userData.name}|${userData.home_state}->${userData.current_state}|${userData.aadhaar ? userData.aadhaar.slice(-4) : '****'}|${new Date().toISOString().split('T')[0]}`;
+    // Determine QR data source
+    let qrString;
+    if (blockchainData) {
+        // Use blockchain-verified data
+        qrString = blockchainData;
+        console.log('Using blockchain-verified QR data');
+    } else {
+        // Use standard QR data format
+        qrString = `MC:${userData.migrant_id || userData.id}|${userData.name}|${userData.home_state}->${userData.current_state}|${userData.aadhaar ? userData.aadhaar.slice(-4) : '****'}|${new Date().toISOString().split('T')[0]}`;
+        console.log('Using standard QR data format');
+    }
 
     // Method 1: Try canvas-based QR library
     if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
@@ -818,13 +934,21 @@ function generateQRCodeEnhanced(userData) {
             if (error) {
                 console.error('Canvas QR failed:', error);
                 // Fallback to Google API
-                generateQRWithGoogleAPI(qrCodeDiv, qrString, userData);
+                generateQRWithGoogleAPI(qrCodeDiv, qrString, userData, isBlockchainVerified, blockchainHash);
             } else {
                 qrCodeDiv.innerHTML = '';
                 qrCodeDiv.appendChild(canvas);
-                canvas.style.border = '2px solid #007bff';
+
+                // Style the canvas
+                canvas.style.border = isBlockchainVerified ? '3px solid #28a745' : '2px solid #007bff';
                 canvas.style.borderRadius = '8px';
                 canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+
+                // Add blockchain verification indicator
+                if (isBlockchainVerified) {
+                    addBlockchainVerificationBadge(qrCodeDiv, blockchainHash);
+                }
+
                 console.log('Canvas QR generated successfully');
             }
         });
@@ -842,22 +966,34 @@ function generateQRCodeEnhanced(userData) {
             });
             qrCodeDiv.innerHTML = '';
             qrCodeDiv.appendChild(canvas);
-            canvas.style.border = '2px solid #007bff';
+
+            canvas.style.border = isBlockchainVerified ? '3px solid #28a745' : '2px solid #007bff';
             canvas.style.borderRadius = '8px';
+
+            // Add blockchain verification indicator
+            if (isBlockchainVerified) {
+                addBlockchainVerificationBadge(qrCodeDiv, blockchainHash);
+            }
+
             console.log('QRious QR generated successfully');
         } catch (error) {
             console.error('QRious QR failed:', error);
-            generateQRWithGoogleAPI(qrCodeDiv, qrString, userData);
+            generateQRWithGoogleAPI(qrCodeDiv, qrString, userData, isBlockchainVerified, blockchainHash);
         }
     }
     // Method 3: Use Google API
     else {
         console.log('Using Google API for QR generation');
-        generateQRWithGoogleAPI(qrCodeDiv, qrString, userData);
+        generateQRWithGoogleAPI(qrCodeDiv, qrString, userData, isBlockchainVerified, blockchainHash);
     }
 
     // Store data globally
-    window.currentQRData = { userData, qrString };
+    window.currentQRData = {
+        userData,
+        qrString,
+        isBlockchainVerified,
+        blockchainHash
+    };
     addQRUniqueIndicator(qrCodeDiv, userData);
 }
 
