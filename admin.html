@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MigrantConnect Admin - QR Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #dc3545;
+            --admin-secondary: #6c757d;
+            --admin-success: #198754;
+            --admin-warning: #ffc107;
+            --admin-dark: #212529;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, #b02a37 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .admin-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .scanner-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #scanner-video {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid var(--admin-primary);
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .scanner-overlay::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border: 2px solid var(--admin-primary);
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .user-details-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-left: 5px solid var(--admin-success);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--admin-dark);
+            min-width: 140px;
+        }
+
+        .detail-value {
+            color: #495057;
+            text-align: right;
+            flex: 1;
+        }
+
+        .verification-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .verified {
+            background: var(--admin-success);
+            color: white;
+        }
+
+        .unverified {
+            background: var(--admin-warning);
+            color: var(--admin-dark);
+        }
+
+        .blockchain-verified {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200px 0;
+            }
+
+            100% {
+                background-position: 200px 0;
+            }
+        }
+
+        .scan-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: white;
+            border-left: 3px solid var(--admin-primary);
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .btn-scan {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, #b02a37 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-scan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--admin-primary);
+        }
+
+        .offline-mode {
+            background: var(--admin-warning);
+            color: var(--admin-dark);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .admin-subtitle {
+            opacity: 0.9;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-value {
+            text-align: left;
+            margin-top: 5px;
+        }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> MigrantConnect Admin
+                    </h1>
+                    <p class="mb-0 mt-1 admin-subtitle">
+                        QR Code Scanner & Verification System
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="d-flex align-items-center justify-content-end gap-3">
+                        <span class="badge bg-light text-dark">
+                            <i class="fas fa-user"></i> Admin Portal
+                        </span>
+                        <span class="badge bg-success" id="online-status">
+                            <i class="fas fa-wifi"></i> Online
+                        </span>
+                        <button class="btn btn-outline-light btn-sm" onclick="adminLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Offline Mode Banner -->
+    <div id="offline-banner" class="offline-mode d-none">
+        <div class="container">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Offline Mode:</strong> Using cached data. Some features may be limited.
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <div class="row">
+            <!-- QR Scanner Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="card admin-card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-camera"></i> QR Code Scanner
+                        </h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <!-- Scanner Options -->
+                        <div class="mb-3">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary" onclick="startCamera()">
+                                    <i class="fas fa-camera"></i> Camera Scan
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="uploadQRImage()">
+                                    <i class="fas fa-upload"></i> Upload Image
+                                </button>
+                                <button type="button" class="btn btn-outline-info" onclick="manualEntry()">
+                                    <i class="fas fa-keyboard"></i> Manual Entry
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Camera Scanner -->
+                        <div id="camera-scanner" class="scanner-container d-none">
+                            <video id="scanner-video" autoplay muted webkit-playsinline playsinline></video>
+                            <div class="scanner-overlay"></div>
+                            <div class="mt-3">
+                                <button class="btn btn-danger" onclick="stopCamera()">
+                                    <i class="fas fa-stop"></i> Stop Camera
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div id="file-upload" class="d-none">
+                            <label for="qr-file-input" class="form-label">Select QR Code Image</label>
+                            <input type="file" id="qr-file-input" accept="image/*" class="form-control mb-3"
+                                title="Upload a QR code image file">
+                            <button class="btn btn-primary" onclick="processUploadedImage()">
+                                <i class="fas fa-search"></i> Scan Uploaded Image
+                            </button>
+                        </div>
+
+                        <!-- Manual Entry -->
+                        <div id="manual-entry" class="d-none">
+                            <div class="mb-3">
+                                <label class="form-label">Enter Migrant ID or QR Data:</label>
+                                <input type="text" id="manual-input" class="form-control"
+                                    placeholder="e.g., MIG-BH-001 or full QR data">
+                            </div>
+                            <button class="btn btn-primary" onclick="processManualEntry()">
+                                <i class="fas fa-search"></i> Look Up User
+                            </button>
+                        </div>
+
+                        <!-- Scan Status -->
+                        <div id="scan-status" class="mt-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                Select a scanning method above to verify migrant identity
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="row mt-4">
+                    <div class="col-4">
+                        <div class="stats-card">
+                            <div class="stats-number" id="scans-today">0</div>
+                            <small class="text-muted">Scans Today</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stats-card">
+                            <div class="stats-number" id="verified-users">0</div>
+                            <small class="text-muted">Verified</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stats-card">
+                            <div class="stats-number" id="blockchain-scans">0</div>
+                            <small class="text-muted">Blockchain</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Details Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="card admin-card">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-check"></i> User Details
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="user-details">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-qrcode fa-3x mb-3"></i>
+                                <p>Scan a QR code to view user details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="user-actions" class="mt-3 d-none">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button class="btn btn-success" onclick="approveService()">
+                            <i class="fas fa-check"></i> Approve Service
+                        </button>
+                        <button class="btn btn-warning" onclick="flagUser()">
+                            <i class="fas fa-flag"></i> Flag for Review
+                        </button>
+                        <button class="btn btn-info" onclick="viewHistory()">
+                            <i class="fas fa-history"></i> View History
+                        </button>
+                        <button class="btn btn-secondary" onclick="printDetails()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan History -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card admin-card">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-history"></i> Recent Scans
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="scan-history" class="scan-history">
+                            <!-- Scan history will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let currentStream = null;
+        let scanHistory = JSON.parse(localStorage.getItem('adminScanHistory') || '[]');
+        let currentUser = null;
+
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check authentication first
+            if (!checkAdminAuth()) {
+                return;
+            }
+
+            updateStats();
+            displayScanHistory();
+            checkOnlineStatus();
+
+            // Check online status periodically
+            setInterval(checkOnlineStatus, 30000);
+        });
+
+        // Check admin authentication
+        function checkAdminAuth() {
+            const adminSession = localStorage.getItem('adminSession') || sessionStorage.getItem('adminSession');
+
+            if (!adminSession) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+
+            try {
+                const session = JSON.parse(adminSession);
+                const now = new Date();
+
+                // Check if session is still valid
+                if (session.expires && new Date(session.expires) <= now) {
+                    localStorage.removeItem('adminSession');
+                    sessionStorage.removeItem('adminSession');
+                    window.location.href = 'admin-login.html';
+                    return false;
+                }
+
+                // Update admin header with username
+                const adminUser = document.querySelector('.badge.bg-light');
+                if (adminUser) {
+                    adminUser.innerHTML = `<i class="fas fa-user"></i> ${session.username}`;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Error parsing admin session:', error);
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+        }
+
+        // Check online/offline status
+        function checkOnlineStatus() {
+            const onlineStatus = document.getElementById('online-status');
+            const offlineBanner = document.getElementById('offline-banner');
+
+            if (navigator.onLine) {
+                onlineStatus.innerHTML = '<i class="fas fa-wifi"></i> Online';
+                onlineStatus.className = 'badge bg-success';
+                offlineBanner.classList.add('d-none');
+            } else {
+                onlineStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> Offline';
+                onlineStatus.className = 'badge bg-warning text-dark';
+                offlineBanner.classList.remove('d-none');
+            }
+        }
+
+        // Start camera for QR scanning
+        async function startCamera() {
+            try {
+                hideAllScanners();
+                document.getElementById('camera-scanner').classList.remove('d-none');
+
+                const video = document.getElementById('scanner-video');
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+
+                video.srcObject = stream;
+                currentStream = stream;
+
+                updateScanStatus('Camera ready - point at QR code', 'success');
+
+                // Start scanning
+                scanFromVideo();
+
+            } catch (error) {
+                console.error('Camera error:', error);
+                updateScanStatus('Camera access denied or not available', 'danger');
+            }
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            hideAllScanners();
+            updateScanStatus('Camera stopped', 'secondary');
+        }
+
+        // Upload QR image
+        function uploadQRImage() {
+            hideAllScanners();
+            document.getElementById('file-upload').classList.remove('d-none');
+            updateScanStatus('Select an image file containing a QR code', 'info');
+        }
+
+        // Manual entry
+        function manualEntry() {
+            hideAllScanners();
+            document.getElementById('manual-entry').classList.remove('d-none');
+            updateScanStatus('Enter migrant ID or QR data manually', 'info');
+            document.getElementById('manual-input').focus();
+        }
+
+        // Hide all scanner interfaces
+        function hideAllScanners() {
+            document.getElementById('camera-scanner').classList.add('d-none');
+            document.getElementById('file-upload').classList.add('d-none');
+            document.getElementById('manual-entry').classList.add('d-none');
+        }
+
+        // Scan from video stream
+        function scanFromVideo() {
+            const video = document.getElementById('scanner-video');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            function scan() {
+                if (video.videoWidth === 0 || video.videoHeight === 0) {
+                    requestAnimationFrame(scan);
+                    return;
+                }
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                if (code) {
+                    updateScanStatus('QR Code detected! Processing...', 'success');
+                    processQRData(code.data);
+                    stopCamera();
+                } else {
+                    requestAnimationFrame(scan);
+                }
+            }
+
+            requestAnimationFrame(scan);
+        }
+
+        // Process uploaded image
+        function processUploadedImage() {
+            const fileInput = document.getElementById('qr-file-input');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                updateScanStatus('Please select an image file', 'warning');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    context.drawImage(img, 0, 0);
+
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                    if (code) {
+                        updateScanStatus('QR Code found in image! Processing...', 'success');
+                        processQRData(code.data);
+                    } else {
+                        updateScanStatus('No QR code found in the image', 'danger');
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Process manual entry
+        function processManualEntry() {
+            const input = document.getElementById('manual-input');
+            const data = input.value.trim();
+
+            if (!data) {
+                updateScanStatus('Please enter a migrant ID or QR data', 'warning');
+                return;
+            }
+
+            updateScanStatus('Processing manual entry...', 'info');
+            processQRData(data);
+        }
+
+        // Process QR data
+        async function processQRData(qrData) {
+            try {
+                console.log('Processing QR data:', qrData);
+
+                let migrantId = null;
+                let isBlockchainVerified = false;
+
+                // Try to parse QR data
+                if (qrData.startsWith('MC:')) {
+                    // Standard MigrantConnect format: MC:ID|Name|State|Aadhaar|Date
+                    const parts = qrData.split('|');
+                    migrantId = parts[0].replace('MC:', '');
+                } else if (qrData.startsWith('{')) {
+                    // JSON format (blockchain QR)
+                    try {
+                        const parsed = JSON.parse(qrData);
+                        migrantId = parsed.migrant_id || parsed.id;
+                        isBlockchainVerified = true;
+                    } catch (e) {
+                        console.error('Failed to parse JSON QR data');
+                    }
+                } else {
+                    // Assume it's a direct migrant ID
+                    migrantId = qrData;
+                }
+
+                if (!migrantId) {
+                    updateScanStatus('Invalid QR code format', 'danger');
+                    return;
+                }
+
+                // Fetch user details
+                const response = await fetch(`${API_BASE_URL}/users/${migrantId}`);
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    displayUserDetails(userData, isBlockchainVerified);
+                    addToScanHistory(userData, isBlockchainVerified);
+                    updateScanStatus(`User found: ${userData.name}`, 'success');
+                    updateStats();
+                } else if (response.status === 404) {
+                    updateScanStatus('User not found in database', 'danger');
+                } else {
+                    updateScanStatus('Error fetching user data', 'danger');
+                }
+
+            } catch (error) {
+                console.error('Error processing QR data:', error);
+                updateScanStatus('Error processing QR code', 'danger');
+            }
+        }
+
+        // Display user details
+        function displayUserDetails(userData, isBlockchainVerified = false) {
+            currentUser = userData;
+            const container = document.getElementById('user-details');
+
+            const verificationBadge = isBlockchainVerified ?
+                '<span class="verification-badge blockchain-verified"><i class="fas fa-shield-alt"></i> Blockchain Verified</span>' :
+                '<span class="verification-badge verified"><i class="fas fa-check"></i> Database Verified</span>';
+
+            container.innerHTML = `
+                <div class="user-details-card card">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="user-avatar mb-3">
+                                <i class="fas fa-user-circle fa-4x text-primary"></i>
+                            </div>
+                            <h4 class="mb-1">${userData.name}</h4>
+                            <p class="text-muted mb-2">ID: ${userData.migrant_id || userData.id}</p>
+                            ${verificationBadge}
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-id-card me-2"></i>Aadhaar:</span>
+                            <span class="detail-value">${userData.aadhaar || 'Not provided'}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-phone me-2"></i>Phone:</span>
+                            <span class="detail-value">${userData.phone || 'Not provided'}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-home me-2"></i>Home State:</span>
+                            <span class="detail-value">${userData.home_state}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-map-marker-alt me-2"></i>Current State:</span>
+                            <span class="detail-value">${userData.current_state}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-calendar me-2"></i>Registration:</span>
+                            <span class="detail-value">${new Date(userData.created_at || Date.now()).toLocaleDateString()}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-clock me-2"></i>Last Update:</span>
+                            <span class="detail-value">${new Date(userData.updated_at || Date.now()).toLocaleDateString()}</span>
+                        </div>
+                        
+                        ${isBlockchainVerified ? `
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fas fa-link me-2"></i>Blockchain:</span>
+                            <span class="detail-value"><span class="badge bg-success">Verified</span></span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('user-actions').classList.remove('d-none');
+        }
+
+        // Add to scan history
+        function addToScanHistory(userData, isBlockchainVerified) {
+            const scan = {
+                id: userData.migrant_id || userData.id,
+                name: userData.name,
+                home_state: userData.home_state,
+                current_state: userData.current_state,
+                timestamp: new Date().toISOString(),
+                blockchain_verified: isBlockchainVerified
+            };
+
+            scanHistory.unshift(scan);
+            if (scanHistory.length > 50) {
+                scanHistory = scanHistory.slice(0, 50);
+            }
+
+            localStorage.setItem('adminScanHistory', JSON.stringify(scanHistory));
+            displayScanHistory();
+        }
+
+        // Display scan history
+        function displayScanHistory() {
+            const container = document.getElementById('scan-history');
+
+            if (scanHistory.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-3">No scans yet</div>';
+                return;
+            }
+
+            container.innerHTML = scanHistory.map(scan => `
+                <div class="history-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${scan.name}</strong> (${scan.id})
+                            <div class="small text-muted">
+                                ${scan.home_state} → ${scan.current_state}
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="small text-muted">${new Date(scan.timestamp).toLocaleString()}</div>
+                            ${scan.blockchain_verified ?
+                    '<span class="badge bg-success">Blockchain</span>' :
+                    '<span class="badge bg-primary">Standard</span>'
+                }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update scan status
+        function updateScanStatus(message, type = 'info') {
+            const container = document.getElementById('scan-status');
+            const alertClass = `alert-${type}`;
+
+            container.innerHTML = `
+                <div class="alert ${alertClass}">
+                    <i class="fas fa-${getStatusIcon(type)}"></i> ${message}
+                </div>
+            `;
+        }
+
+        // Get status icon
+        function getStatusIcon(type) {
+            const icons = {
+                success: 'check-circle',
+                danger: 'exclamation-triangle',
+                warning: 'exclamation-circle',
+                info: 'info-circle',
+                secondary: 'minus-circle'
+            };
+            return icons[type] || 'info-circle';
+        }
+
+        // Update statistics
+        function updateStats() {
+            const today = new Date().toDateString();
+            const todayScans = scanHistory.filter(scan =>
+                new Date(scan.timestamp).toDateString() === today
+            ).length;
+
+            const verifiedScans = scanHistory.length;
+            const blockchainScans = scanHistory.filter(scan => scan.blockchain_verified).length;
+
+            document.getElementById('scans-today').textContent = todayScans;
+            document.getElementById('verified-users').textContent = verifiedScans;
+            document.getElementById('blockchain-scans').textContent = blockchainScans;
+        }
+
+        // Action functions
+        function approveService() {
+            if (currentUser) {
+                updateScanStatus(`Service approved for ${currentUser.name}`, 'success');
+            }
+        }
+
+        function flagUser() {
+            if (currentUser) {
+                updateScanStatus(`User ${currentUser.name} flagged for review`, 'warning');
+            }
+        }
+
+        function viewHistory() {
+            if (currentUser) {
+                alert(`Viewing full history for ${currentUser.name}\n(This would open a detailed history view)`);
+            }
+        }
+
+        function printDetails() {
+            if (currentUser) {
+                window.print();
+            }
+        }
+
+        // Handle offline/online events
+        window.addEventListener('online', checkOnlineStatus);
+        window.addEventListener('offline', checkOnlineStatus);
+
+        // Admin logout function
+        function adminLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminSession');
+                sessionStorage.removeItem('adminSession');
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+
+</html>
