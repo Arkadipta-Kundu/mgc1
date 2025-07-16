@@ -192,7 +192,7 @@
                 }
 
                 // Redirect to admin dashboard
-                window.location.href = 'admin.html';
+                window.location.href = 'admin-portal.html';
             } else {
                 // Show error
                 showError('Invalid credentials. Please try again.');
@@ -236,7 +236,7 @@
                     // Check if session is still valid
                     if (!session.expires || new Date(session.expires) > now) {
                         // Redirect to admin dashboard
-                        window.location.href = 'admin.html';
+                        window.location.href = 'admin-portal.html';
                     } else {
                         // Remove expired session
                         localStorage.removeItem('adminSession');

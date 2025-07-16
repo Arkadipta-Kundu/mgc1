@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MigrantConnect - Admin Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .admin-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .qr-scanner-area {
+            border: 3px dashed #007bff;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qr-scanner-area:hover {
+            background: #e9ecef;
+            border-color: #0056b3;
+        }
+
+        .scheme-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
+
+        .scheme-active {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .scheme-inactive {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .eligibility-result {
+            border-left: 4px solid #28a745;
+            background: #d4edda;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 0.5rem 0;
+        }
+
+        .not-eligible {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .qr-upload-hidden {
+            display: none;
+        }
+
+        .qr-image-preview {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .camera-video {
+            border: 2px solid #007bff;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0"><i class="fas fa-shield-alt"></i> MigrantConnect Admin Portal</h1>
+                    <p class="mb-0 opacity-75">Government Benefits & Schemes Management System</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-shield"></i> Admin Panel
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-out-alt"></i>
+                                    Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <!-- Statistics Dashboard -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-schemes">0</div>
+                    <div>Active Schemes</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-beneficiaries">0</div>
+                    <div>Total Beneficiaries</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="qr-scans-today">0</div>
+                    <div>QR Scans Today</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="pending-approvals">0</div>
+                    <div>Pending Approvals</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="admin-card card h-100" onclick="showQRScanner()">
+                    <div class="card-body text-center">
+                        <i class="fas fa-qrcode fa-3x text-primary mb-3"></i>
+                        <h5>Scan QR Code</h5>
+                        <p class="text-muted">Scan citizen QR to check benefit eligibility</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="admin-card card h-100" onclick="showSchemeManagement()">
+                    <div class="card-body text-center">
+                        <i class="fas fa-list-alt fa-3x text-success mb-3"></i>
+                        <h5>Manage Schemes</h5>
+                        <p class="text-muted">Create, edit, and manage benefit schemes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="admin-card card h-100" onclick="showReports()">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-bar fa-3x text-info mb-3"></i>
+                        <h5>Reports & Analytics</h5>
+                        <p class="text-muted">View statistics and generate reports</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Scanner Section -->
+        <div id="qr-scanner-section" class="d-none">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card admin-card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-qrcode"></i> QR Code Scanner</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- QR Scanner Options -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="qr-scanner-area" onclick="startCameraScanner()">
+                                        <i class="fas fa-camera fa-3x text-primary mb-3"></i>
+                                        <h6>Camera Scanner</h6>
+                                        <p class="text-muted small">Use device camera to scan QR</p>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-camera"></i> Start Camera
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="qr-scanner-area"
+                                        onclick="document.getElementById('qr-image-upload').click()">
+                                        <i class="fas fa-upload fa-3x text-success mb-3"></i>
+                                        <h6>Upload QR Image</h6>
+                                        <p class="text-muted small">Upload QR code image file</p>
+                                        <button class="btn btn-success btn-sm">
+                                            <i class="fas fa-upload"></i> Upload Image
+                                        </button>
+                                    </div>
+                                    <input type="file" id="qr-image-upload" accept="image/*" class="qr-upload-hidden"
+                                        onchange="processQRImage(event)">
+                                </div>
+                            </div>
+
+                            <!-- Manual QR Data Input -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="qr-scanner-area"
+                                        style="background: #f8f9fa; border: 2px dashed #6c757d;">
+                                        <i class="fas fa-keyboard fa-3x text-secondary mb-2"></i>
+                                        <h6>Manual QR Input</h6>
+                                        <p class="text-muted small">Paste QR code data manually</p>
+                                    </div>
+                                    <div class="mt-2">
+                                        <textarea class="form-control" id="manual-qr-input" rows="4"
+                                            placeholder="Paste QR code JSON data here..."></textarea>
+                                        <button class="btn btn-info btn-sm mt-2" onclick="processManualQRInput()">
+                                            <i class="fas fa-paste"></i> Process QR Data
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm mt-2 ms-2"
+                                            onclick="generateSampleQRData()">
+                                            <i class="fas fa-file-code"></i> Generate Sample
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Camera Preview -->
+                            <div id="camera-preview" class="d-none mb-4">
+                                <video id="camera-video" width="100%" height="300" autoplay></video>
+                                <div class="text-center mt-2">
+                                    <button class="btn btn-success me-2" onclick="captureQRFromCamera()">
+                                        <i class="fas fa-camera"></i> Capture QR
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="stopCamera()">
+                                        <i class="fas fa-stop"></i> Stop Camera
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- QR Image Preview -->
+                            <div id="qr-image-preview" class="d-none mb-4">
+                                <img id="uploaded-qr-image" src="" alt="QR Code" class="qr-image-preview">
+                                <div class="text-center mt-2">
+                                    <button class="btn btn-primary" onclick="decodeUploadedQR()">
+                                        <i class="fas fa-qrcode"></i> Decode QR Code
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Demo QR Data Input -->
+                            <div class="mt-4">
+                                <label class="form-label">Demo: Select Test User</label>
+                                <select class="form-select mb-2" id="demo-user-select" aria-label="Select demo user">
+                                    <option value="">Select a demo user</option>
+                                    <option value="demo1">Ramesh Kumar Singh (Construction Worker)</option>
+                                    <option value="demo2">Priya Sharma (Domestic Helper)</option>
+                                    <option value="demo3">Arjun Das (Student)</option>
+                                </select>
+                                <button class="btn btn-outline-primary" onclick="loadDemoUser()">
+                                    Load Demo User Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card admin-card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-user-check"></i> Citizen Information</h5>
+                        </div>
+                        <div class="card-body" id="citizen-info">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-scan fa-3x mb-3"></i>
+                                <p>Scan a QR code to view citizen information</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eligibility Results -->
+            <div id="eligibility-results" class="d-none">
+                <div class="card admin-card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-clipboard-check"></i> Benefit Eligibility Results</h5>
+                    </div>
+                    <div class="card-body" id="eligibility-content">
+                        <!-- Eligibility results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheme Management Section -->
+        <div id="scheme-management-section" class="d-none">
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="card admin-card">
+                        <div
+                            class="card-header d-flex justify-content-between align-items-center bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-list-alt"></i> Schemes & Benefits Management</h5>
+                            <button class="btn btn-light btn-sm" onclick="showCreateSchemeModal()">
+                                <i class="fas fa-plus"></i> New Scheme
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Scheme Name</th>
+                                            <th>Category</th>
+                                            <th>Eligibility Criteria</th>
+                                            <th>Status</th>
+                                            <th>Beneficiaries</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="schemes-table-body">
+                                        <!-- Schemes will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports-section" class="d-none">
+            <div class="card admin-card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Reports & Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Scheme Performance</h6>
+                            <canvas id="scheme-chart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Recent Activities</h6>
+                            <div id="recent-activities">
+                                <!-- Recent activities will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Scheme Modal -->
+    <div class="modal fade" id="createSchemeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-plus"></i> Create New Scheme</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="scheme-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="scheme-name">Scheme Name *</label>
+                                <input type="text" class="form-control" id="scheme-name" placeholder="Enter scheme name"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="scheme-category">Category *</label>
+                                <select class="form-select" id="scheme-category" aria-label="Select scheme category"
+                                    required>
+                                    <option value="">Select Category</option>
+                                    <option value="food">Food Security</option>
+                                    <option value="health">Healthcare</option>
+                                    <option value="education">Education</option>
+                                    <option value="finance">Financial Aid</option>
+                                    <option value="housing">Housing</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label" for="scheme-description">Description</label>
+                                <textarea class="form-control" id="scheme-description" rows="3"
+                                    placeholder="Enter scheme description"></textarea>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary mb-3">Eligibility Criteria</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="max-income">Max Monthly Income (₹)</label>
+                                <input type="number" class="form-control" id="max-income" min="0"
+                                    placeholder="e.g. 25000">
+                                <small class="text-muted">Leave blank for no income limit</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="min-family-size">Min Family Size</label>
+                                <input type="number" class="form-control" id="min-family-size" min="1" value="1"
+                                    placeholder="1">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="social-category-criteria">Social Category</label>
+                                <select class="form-select" id="social-category-criteria"
+                                    aria-label="Select social category">
+                                    <option value="">Any Category</option>
+                                    <option value="general">General</option>
+                                    <option value="obc">OBC</option>
+                                    <option value="sc">SC</option>
+                                    <option value="st">ST</option>
+                                    <option value="ews">EWS</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="housing-criteria">Required Housing Status</label>
+                                <select class="form-select" id="housing-criteria" aria-label="Select housing status">
+                                    <option value="">Any Housing Status</option>
+                                    <option value="owned">House Owned</option>
+                                    <option value="rented">Rented</option>
+                                    <option value="homeless">Homeless</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Special Circumstances</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bpl-required">
+                                    <label class="form-check-label" for="bpl-required">BPL Card Required</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="widow-preference">
+                                    <label class="form-check-label" for="widow-preference">Widow/Single Mother
+                                        Preference</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="disability-preference">
+                                    <label class="form-check-label" for="disability-preference">Disability
+                                        Preference</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createScheme()">Create Scheme</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="assets/js/admin-portal.js"></script>
+</body>
+
+</html>

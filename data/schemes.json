@@ -1,0 +1,515 @@
+[
+  {
+    "id": 1,
+    "name": "Pradhan Mantri Awas Yojana",
+    "category": "housing",
+    "description": "Affordable housing scheme for urban poor providing financial assistance for home construction and purchase",
+    "status": "active",
+    "beneficiaries": 1250,
+    "criteria": {
+      "maxIncome": 18000,
+      "minFamilySize": 2,
+      "socialCategory": "",
+      "housingStatus": "homeless",
+      "bplRequired": true,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 120000,
+    "benefitType": "subsidy",
+    "applicationProcess": "Apply through local municipal corporation",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Income Certificate",
+      "BPL Card",
+      "Property Documents"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Antyodaya Anna Yojana",
+    "category": "food",
+    "description": "Food security scheme providing subsidized food grains to the poorest of poor families",
+    "status": "active",
+    "beneficiaries": 2800,
+    "criteria": {
+      "maxIncome": 15000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": true,
+      "widowPreference": true,
+      "disabilityPreference": true
+    },
+    "benefitAmount": 35,
+    "benefitType": "subsidy",
+    "applicationProcess": "Apply at local Fair Price Shop",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "BPL Card",
+      "Income Certificate",
+      "Residence Proof"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Ayushman Bharat Scheme",
+    "category": "health",
+    "description": "Health insurance scheme providing cashless treatment up to ₹5 lakh per family per year",
+    "status": "active",
+    "beneficiaries": 3500,
+    "criteria": {
+      "maxIncome": 25000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": true
+    },
+    "benefitAmount": 500000,
+    "benefitType": "service",
+    "applicationProcess": "Apply online or at designated enrollment centers",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Ration Card",
+      "Income Certificate",
+      "Family Photo"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Pradhan Mantri Mudra Yojana",
+    "category": "finance",
+    "description": "Micro-finance scheme providing collateral-free loans for small businesses",
+    "status": "active",
+    "beneficiaries": 980,
+    "criteria": {
+      "maxIncome": 50000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 1000000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through participating banks",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "PAN Card",
+      "Business Plan",
+      "Address Proof"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Pradhan Mantri Kaushal Vikas Yojana",
+    "category": "education",
+    "description": "Skill development and vocational training program for youth",
+    "status": "active",
+    "beneficiaries": 1850,
+    "criteria": {
+      "maxIncome": 30000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 8000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through PMKVY centers",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Educational Certificate",
+      "Income Certificate",
+      "Bank Details"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Mahatma Gandhi NREGA",
+    "category": "employment",
+    "description": "Guaranteed employment for 100 days per year in rural areas",
+    "status": "active",
+    "beneficiaries": 4200,
+    "criteria": {
+      "maxIncome": 20000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 20000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply at Gram Panchayat office",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Job Card",
+      "Bank Account Details",
+      "Residence Proof"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Pradhan Mantri Jan Aushadhi Yojana",
+    "category": "health",
+    "description": "Affordable quality medicines through dedicated outlets",
+    "status": "active",
+    "beneficiaries": 2150,
+    "criteria": {
+      "maxIncome": 40000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": true
+    },
+    "benefitAmount": 5000,
+    "benefitType": "subsidy",
+    "applicationProcess": "Visit Jan Aushadhi stores",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Medical Prescription",
+      "Income Certificate"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Pradhan Mantri Ujjwala Yojana",
+    "category": "welfare",
+    "description": "Free LPG connections for women from BPL families",
+    "status": "active",
+    "beneficiaries": 3800,
+    "criteria": {
+      "maxIncome": 18000,
+      "minFamilySize": 2,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": true,
+      "widowPreference": true,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 1600,
+    "benefitType": "subsidy",
+    "applicationProcess": "Apply through LPG distributors",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "BPL Card",
+      "Bank Account Details",
+      "Address Proof"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "SC/ST Education Scholarship",
+    "category": "education",
+    "description": "Educational support and scholarships for SC/ST students",
+    "status": "active",
+    "beneficiaries": 1620,
+    "criteria": {
+      "maxIncome": 25000,
+      "minFamilySize": 1,
+      "socialCategory": "sc",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 50000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through National Scholarship Portal",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Caste Certificate",
+      "Income Certificate",
+      "Academic Records"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "OBC Minority Scholarship",
+    "category": "education",
+    "description": "Educational assistance for OBC and minority community students",
+    "status": "active",
+    "beneficiaries": 950,
+    "criteria": {
+      "maxIncome": 22000,
+      "minFamilySize": 1,
+      "socialCategory": "obc",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 40000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through state education department",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "OBC Certificate",
+      "Income Certificate",
+      "Educational Documents"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Widow Pension Scheme",
+    "category": "welfare",
+    "description": "Monthly pension support for widowed women",
+    "status": "active",
+    "beneficiaries": 780,
+    "criteria": {
+      "maxIncome": 15000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": true,
+      "widowPreference": true,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 300,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through Social Welfare Department",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Death Certificate of Husband",
+      "BPL Card",
+      "Bank Account Details"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Disability Pension Scheme",
+    "category": "welfare",
+    "description": "Monthly financial assistance for persons with disabilities",
+    "status": "active",
+    "beneficiaries": 1320,
+    "criteria": {
+      "maxIncome": 20000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": true
+    },
+    "benefitAmount": 500,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through Disability Welfare Office",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Disability Certificate",
+      "Income Certificate",
+      "Bank Account Details"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Janani Suraksha Yojana",
+    "category": "health",
+    "description": "Safe motherhood intervention providing cash assistance for institutional delivery",
+    "status": "active",
+    "beneficiaries": 2450,
+    "criteria": {
+      "maxIncome": 30000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 1400,
+    "benefitType": "cash",
+    "applicationProcess": "Register at ANM/ASHA worker",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "JSY Card",
+      "BPL Card",
+      "Medical Records"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Pradhan Mantri Fasal Bima Yojana",
+    "category": "agriculture",
+    "description": "Crop insurance scheme providing coverage against production risks",
+    "status": "active",
+    "beneficiaries": 890,
+    "criteria": {
+      "maxIncome": 60000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 200000,
+    "benefitType": "insurance",
+    "applicationProcess": "Apply through banks or CSCs",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Land Records",
+      "Sowing Certificate",
+      "Bank Account Details"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Digital India Initiative",
+    "category": "technology",
+    "description": "Digital literacy and empowerment program for citizens",
+    "status": "active",
+    "beneficiaries": 1150,
+    "criteria": {
+      "maxIncome": 35000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 10000,
+    "benefitType": "service",
+    "applicationProcess": "Register at Digital Seva centers",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Educational Certificate",
+      "Age Proof"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Stand Up India Scheme",
+    "category": "finance",
+    "description": "Bank loans for SC/ST and women entrepreneurs",
+    "status": "active",
+    "beneficiaries": 420,
+    "criteria": {
+      "maxIncome": 75000,
+      "minFamilySize": 1,
+      "socialCategory": "sc",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": true,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 10000000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through designated bank branches",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Business Plan",
+      "Caste Certificate",
+      "Project Report"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Sukanya Samriddhi Yojana",
+    "category": "welfare",
+    "description": "Small deposit scheme for securing future of girl child",
+    "status": "active",
+    "beneficiaries": 1580,
+    "criteria": {
+      "maxIncome": 40000,
+      "minFamilySize": 2,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 150000,
+    "benefitType": "savings",
+    "applicationProcess": "Open account at post office or banks",
+    "requiredDocuments": [
+      "Birth Certificate of Girl Child",
+      "Aadhaar Card",
+      "Address Proof",
+      "Initial Deposit"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Atal Pension Yojana",
+    "category": "finance",
+    "description": "Pension scheme for workers in unorganized sector",
+    "status": "active",
+    "beneficiaries": 2100,
+    "criteria": {
+      "maxIncome": 45000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 5000,
+    "benefitType": "cash",
+    "applicationProcess": "Apply through banks",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Bank Account",
+      "Mobile Number",
+      "Age Proof"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "National Health Mission",
+    "category": "health",
+    "description": "Comprehensive healthcare services for rural and urban poor",
+    "status": "active",
+    "beneficiaries": 5200,
+    "criteria": {
+      "maxIncome": 35000,
+      "minFamilySize": 1,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": true,
+      "widowPreference": true,
+      "disabilityPreference": true
+    },
+    "benefitAmount": 30000,
+    "benefitType": "service",
+    "applicationProcess": "Access through government health centers",
+    "requiredDocuments": ["Aadhaar Card", "BPL Card", "Address Proof"]
+  },
+  {
+    "id": 20,
+    "name": "Swachh Bharat Mission",
+    "category": "welfare",
+    "description": "Sanitation and cleanliness initiative providing toilet construction support",
+    "status": "active",
+    "beneficiaries": 3650,
+    "criteria": {
+      "maxIncome": 25000,
+      "minFamilySize": 2,
+      "socialCategory": "",
+      "housingStatus": "",
+      "bplRequired": false,
+      "widowPreference": false,
+      "disabilityPreference": false
+    },
+    "benefitAmount": 12000,
+    "benefitType": "subsidy",
+    "applicationProcess": "Apply through Gram Panchayat",
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "House Ownership Proof",
+      "Photograph",
+      "Bank Account Details"
+    ]
+  }
+]

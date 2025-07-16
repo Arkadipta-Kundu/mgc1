@@ -1,0 +1,219 @@
+[
+  {
+    "id": "demo1",
+    "migrantId": "MIG-BI-001",
+    "name": "Ramesh Kumar Singh",
+    "aadhaar": "123456789012",
+    "phone": "9876543210",
+    "personalInfo": {
+      "fullName": "Ramesh Kumar Singh",
+      "fatherName": "Suresh Singh",
+      "motherName": "Kamala Singh",
+      "dateOfBirth": "1985-03-15",
+      "gender": "male",
+      "maritalStatus": "married",
+      "phoneNumber": "9876543210",
+      "email": "ramesh.singh@email.com",
+      "aadhaarNumber": "123456789012",
+      "panNumber": "ABCDE1234F"
+    },
+    "familyInfo": {
+      "totalMembers": 4,
+      "dependents": 2,
+      "children": 2,
+      "elderlyMembers": 0,
+      "disabledMembers": 0,
+      "familyHead": "self",
+      "spouseName": "Sunita Singh",
+      "childrenDetails": [
+        {
+          "name": "Amit Singh",
+          "age": 12,
+          "gender": "male",
+          "schooling": true
+        },
+        {
+          "name": "Priya Singh",
+          "age": 8,
+          "gender": "female",
+          "schooling": true
+        }
+      ]
+    },
+    "incomeEmployment": {
+      "employmentStatus": "self-employed",
+      "primaryOccupation": "Construction Worker",
+      "monthlyIncome": 12000,
+      "hasRegularIncome": false,
+      "workLocation": "Delhi NCR",
+      "skillSets": ["Construction", "Masonry"]
+    },
+    "housingAssets": {
+      "housingStatus": "rented",
+      "monthlyRent": 4500,
+      "hasLandProperty": false,
+      "hasBankAccount": true,
+      "hasVehicle": false,
+      "hasLivestock": false,
+      "houseType": "kutcha"
+    },
+    "locationMigration": {
+      "currentState": "Delhi",
+      "currentDistrict": "New Delhi",
+      "originState": "Bihar",
+      "originDistrict": "Patna",
+      "migrationYear": 2018,
+      "migrationReason": "employment"
+    },
+    "socialCategory": {
+      "caste": "obc",
+      "religion": "hindu",
+      "hasDisability": false,
+      "isMinority": false
+    },
+    "specialCircumstances": {
+      "hasBPLCard": true,
+      "isWidowed": false,
+      "isSingleParent": false,
+      "hasChronicIllness": false,
+      "isPregnant": false,
+      "hasSeniorCitizen": false
+    }
+  },
+  {
+    "id": "demo2",
+    "migrantId": "MIG-UP-002",
+    "name": "Priya Sharma",
+    "aadhaar": "987654321098",
+    "phone": "8765432109",
+    "personalInfo": {
+      "fullName": "Priya Sharma",
+      "fatherName": "Mohan Sharma",
+      "motherName": "Kamala Sharma",
+      "dateOfBirth": "1992-03-22",
+      "gender": "female",
+      "maritalStatus": "widowed",
+      "phoneNumber": "8765432109",
+      "email": "priya.sharma@email.com",
+      "aadhaarNumber": "987654321098",
+      "panNumber": "FGHIJ5678K"
+    },
+    "familyInfo": {
+      "totalMembers": 2,
+      "dependents": 1,
+      "children": 0,
+      "elderlyMembers": 1,
+      "disabledMembers": 0,
+      "familyHead": "self",
+      "spouseName": "",
+      "childrenDetails": []
+    },
+    "incomeEmployment": {
+      "employmentStatus": "formal",
+      "primaryOccupation": "Domestic Helper",
+      "monthlyIncome": 8000,
+      "hasRegularIncome": true,
+      "workLocation": "Delhi",
+      "skillSets": ["Household Work", "Elderly Care"]
+    },
+    "housingAssets": {
+      "housingStatus": "family",
+      "monthlyRent": 0,
+      "hasLandProperty": false,
+      "hasBankAccount": true,
+      "hasVehicle": false,
+      "hasLivestock": false,
+      "houseType": "semi-pucca"
+    },
+    "locationMigration": {
+      "currentState": "Delhi",
+      "currentDistrict": "South Delhi",
+      "originState": "Uttar Pradesh",
+      "originDistrict": "Lucknow",
+      "migrationYear": 2020,
+      "migrationReason": "family"
+    },
+    "socialCategory": {
+      "caste": "general",
+      "religion": "hindu",
+      "hasDisability": false,
+      "isMinority": false
+    },
+    "specialCircumstances": {
+      "hasBPLCard": false,
+      "isWidowed": true,
+      "isSingleParent": false,
+      "hasChronicIllness": false,
+      "isPregnant": false,
+      "hasSeniorCitizen": true
+    }
+  },
+  {
+    "id": "demo3",
+    "migrantId": "MIG-WB-003",
+    "name": "Arjun Das",
+    "aadhaar": "456789123456",
+    "phone": "7654321098",
+    "personalInfo": {
+      "fullName": "Arjun Das",
+      "fatherName": "Kartik Das",
+      "motherName": "Shanti Das",
+      "dateOfBirth": "2000-12-10",
+      "gender": "male",
+      "maritalStatus": "single",
+      "phoneNumber": "7654321098",
+      "email": "arjun.das@email.com",
+      "aadhaarNumber": "456789123456",
+      "panNumber": ""
+    },
+    "familyInfo": {
+      "totalMembers": 3,
+      "dependents": 2,
+      "children": 0,
+      "elderlyMembers": 0,
+      "disabledMembers": 0,
+      "familyHead": "father",
+      "spouseName": "",
+      "childrenDetails": []
+    },
+    "incomeEmployment": {
+      "employmentStatus": "student",
+      "primaryOccupation": "Student",
+      "monthlyIncome": 5000,
+      "hasRegularIncome": false,
+      "workLocation": "Bangalore",
+      "skillSets": ["Computer Programming", "English"]
+    },
+    "housingAssets": {
+      "housingStatus": "family",
+      "monthlyRent": 0,
+      "hasLandProperty": false,
+      "hasBankAccount": true,
+      "hasVehicle": false,
+      "hasLivestock": false,
+      "houseType": "pucca"
+    },
+    "locationMigration": {
+      "currentState": "Karnataka",
+      "currentDistrict": "Bangalore Urban",
+      "originState": "West Bengal",
+      "originDistrict": "Kolkata",
+      "migrationYear": 2019,
+      "migrationReason": "education"
+    },
+    "socialCategory": {
+      "caste": "sc",
+      "religion": "hindu",
+      "hasDisability": false,
+      "isMinority": false
+    },
+    "specialCircumstances": {
+      "hasBPLCard": false,
+      "isWidowed": false,
+      "isSingleParent": false,
+      "hasChronicIllness": false,
+      "isPregnant": false,
+      "hasSeniorCitizen": false
+    }
+  }
+]

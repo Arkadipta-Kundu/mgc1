@@ -301,6 +301,10 @@ async function handleLogin(e) {
         localStorage.setItem('userAadhaar', userAadhaar); // Store Aadhaar in local storage too
         localStorage.setItem('selectedLanguage', language);
 
+        // Store user data for QR script compatibility
+        localStorage.setItem('userData', JSON.stringify(data.user));
+        localStorage.setItem('cachedUserData', JSON.stringify(data.user));
+
         currentUserData = data.user;
 
         if (typeof AlertUtils !== 'undefined') {
@@ -699,30 +703,48 @@ function updateBenefitCards(userData) {
 
 // QR Page initialization
 async function initializeQRPage() {
-    const isAuth = await checkAuth();
-    if (!isAuth) return;
+    console.log('Initializing QR page...');
 
-    console.log('Initializing QR page, currentUserData:', currentUserData);
+    // Don't force auth check immediately - let QR enhanced script handle it
+    // This prevents automatic redirects on QR page
 
-    if (currentUserData && currentUserData.name && currentUserData.home_state && currentUserData.current_state) {
-        console.log('Using existing user data for QR page');
-        updateQRUserInfo(currentUserData);
-        generateQRCode(currentUserData);
-    } else {
-        console.log('Fetching fresh user data for QR page');
-        // Fetch fresh user details directly from database
-        try {
-            await fetchUserDetails();
-            if (currentUserData) {
-                updateQRUserInfo(currentUserData);
-                generateQRCode(currentUserData);
-            } else {
-                console.error('Failed to fetch user data for QR page');
-                showAlert('Error loading user data. Please refresh the page.', 'error');
+    try {
+        // Try to check auth but don't redirect on failure
+        const sessionToken = localStorage.getItem('sessionToken');
+        if (sessionToken) {
+            console.log('Session token found, attempting verification...');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Auth verification successful');
+                    currentUserData = data.user;
+
+                    // Let QR enhanced script handle the rest
+                    return;
+                } else {
+                    console.log('⚠️ Auth verification failed, but staying on QR page');
+                }
+            } catch (error) {
+                console.log('⚠️ Auth verification error, but staying on QR page:', error);
             }
-        } catch (error) {
-            console.error('Error in QR page initialization:', error);
+        } else {
+            console.log('⚠️ No session token, but staying on QR page');
         }
+
+        // Don't redirect - let QR enhanced script show appropriate message
+
+    } catch (error) {
+        console.error('Error in QR page initialization:', error);
+        // Still don't redirect - let user see the error
     }
 }
 
@@ -1739,180 +1761,27 @@ async function initializeBenefitPage() {
     console.log('✅ Benefit page initialized - offline banner explicitly hidden');
 }
 
-// QR Code Action Functions
-function downloadQRCode() {
-    try {
-        const qrContainer = document.getElementById('qrcode');
-        if (!qrContainer) {
-            showAlert('QR code not found', 'error');
-            return;
-        }
-
-        const canvas = qrContainer.querySelector('canvas');
-        const img = qrContainer.querySelector('img');
-
-        if (canvas) {
-            const link = document.createElement('a');
-            link.download = `MigrantConnect-QR-${window.currentQRData?.userData?.migrant_id || 'unknown'}.png`;
-            link.href = canvas.toDataURL('image/png');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showAlert('QR Code downloaded successfully!', 'success');
-        } else if (img) {
-            const link = document.createElement('a');
-            link.download = `MigrantConnect-QR-${window.currentQRData?.userData?.migrant_id || 'unknown'}.png`;
-            link.href = img.src;
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showAlert('QR Code download started!', 'success');
-        } else {
-            showAlert('No QR code image found to download', 'error');
-        }
-    } catch (error) {
-        console.error('Download QR code error:', error);
-        showAlert('Failed to download QR code', 'error');
-    }
+// Quick action functions for dashboard
+function checkEligibility() {
+    // Redirect to schemes page which will automatically check eligibility
+    window.location.href = 'schemes.html';
 }
 
-function shareQRCode() {
-    try {
-        if (!window.currentQRData) {
-            showAlert('QR code data not available', 'error');
-            return;
-        }
-
-        const userData = window.currentQRData.userData;
-        const shareText = `MigrantConnect Digital Identity\nName: ${userData.name}\nID: ${userData.migrant_id || userData.id}\nFrom: ${userData.home_state} to ${userData.current_state}`;
-
-        if (navigator.share) {
-            navigator.share({
-                title: 'MigrantConnect Digital Identity',
-                text: shareText,
-                url: window.location.href
-            }).then(() => {
-                showAlert('QR Code shared successfully!', 'success');
-            }).catch(() => {
-                fallbackShare(shareText);
-            });
-        } else {
-            fallbackShare(shareText);
-        }
-    } catch (error) {
-        console.error('Share QR code error:', error);
-        showAlert('Failed to share QR code', 'error');
-    }
+function downloadAllCards() {
+    alert('Downloading all benefit cards... This feature will be implemented soon.');
 }
 
-function fallbackShare(shareText) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-            showAlert('QR code information copied to clipboard!', 'success');
-        }).catch(() => {
-            legacyShare(shareText);
-        });
-    } else {
-        legacyShare(shareText);
-    }
+function findNearestCenter() {
+    alert('Finding nearest service centers... This feature will be implemented soon.');
 }
 
-function legacyShare(shareText) {
-    const textArea = document.createElement('textarea');
-    textArea.value = shareText;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-        document.execCommand('copy');
-        showAlert('QR code information copied to clipboard!', 'success');
-    } catch (error) {
-        showAlert('Manual copy: Select and copy the QR information from the page', 'info');
-    } finally {
-        document.body.removeChild(textArea);
-    }
+function contactSupport() {
+    alert('Support: Call 1800-XXX-XXXX or email support@migrantconnect.gov.in');
 }
 
-function printQRCode() {
-    try {
-        const qrContainer = document.getElementById('qrcode');
-        if (!qrContainer) {
-            showAlert('QR code not found', 'error');
-            return;
-        }
-
-        const userData = window.currentQRData?.userData;
-        if (!userData) {
-            showAlert('User data not available', 'error');
-            return;
-        }
-
-        const printWindow = window.open('', '_blank', 'width=600,height=800');
-        const canvas = qrContainer.querySelector('canvas');
-        const img = qrContainer.querySelector('img');
-
-        let qrCodeHTML = '';
-        if (canvas) {
-            qrCodeHTML = `<img src="${canvas.toDataURL('image/png')}" alt="QR Code" style="width: 200px; height: 200px; border: 2px solid #007bff; border-radius: 8px;">`;
-        } else if (img) {
-            qrCodeHTML = `<img src="${img.src}" alt="QR Code" style="width: 200px; height: 200px; border: 2px solid #007bff; border-radius: 8px;">`;
-        } else {
-            qrCodeHTML = '<div style="width: 200px; height: 200px; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">QR Code Not Available</div>';
-        }
-
-        const printContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>MigrantConnect Digital Identity - ${userData.name}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; text-align: center; color: #333; }
-                    .header { margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 20px; }
-                    .qr-section { margin: 30px 0; }
-                    .user-info { margin: 20px 0; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto; }
-                    .info-row { display: flex; justify-content: space-between; margin: 10px 0; padding: 5px 0; border-bottom: 1px solid #eee; }
-                    .footer { margin-top: 40px; font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 20px; }
-                    @media print { body { margin: 0; } }
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <h1>🏠 MigrantConnect</h1>
-                    <h2>Digital Identity Card</h2>
-                    <p style="color: #666;">Government of India Initiative</p>
-                </div>
-                <div class="qr-section">
-                    ${qrCodeHTML}
-                    ${window.currentQRData?.isBlockchainVerified ? '<div style="color: #28a745; margin-top: 10px;"><strong>✓ Blockchain Verified</strong></div>' : ''}
-                </div>
-                <div class="user-info">
-                    <div class="info-row"><strong>Name:</strong><span>${userData.name}</span></div>
-                    <div class="info-row"><strong>Migrant ID:</strong><span>${userData.migrant_id || userData.id}</span></div>
-                    <div class="info-row"><strong>Home State:</strong><span>${userData.home_state}</span></div>
-                    <div class="info-row"><strong>Current State:</strong><span>${userData.current_state}</span></div>
-                    <div class="info-row"><strong>Issue Date:</strong><span>${new Date().toLocaleDateString()}</span></div>
-                    <div class="info-row"><strong>Valid Until:</strong><span>${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</span></div>
-                </div>
-                <div class="footer">
-                    <p>Printed on: ${new Date().toLocaleString()}</p>
-                    <p>© 2025 MigrantConnect - Government of India</p>
-                </div>
-                <script>window.onload = function() { setTimeout(function() { window.print(); }, 500); };</script>
-            </body>
-            </html>
-        `;
-
-        printWindow.document.write(printContent);
-        printWindow.document.close();
-
-        showAlert('Print dialog opened successfully!', 'success');
-    } catch (error) {
-        console.error('Print QR code error:', error);
-        showAlert('Failed to print QR code', 'error');
-    }
+// Quick apply function
+function quickApply(benefitType) {
+    alert(`Quick apply for ${benefitType} benefits... This feature will redirect to application form.`);
 }
+
+// Initialize the application

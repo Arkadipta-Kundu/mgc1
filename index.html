@@ -104,92 +104,50 @@
 
                             <!-- Registration Form -->
                             <div class="tab-pane fade" id="register" role="tabpanel">
-                                <form id="registerForm">
-                                    <div class="mb-3">
-                                        <label for="regFullName" class="form-label" data-translate="full_name_label">
-                                            <i class="fas fa-user me-2"></i>Full Name
-                                        </label>
-                                        <input type="text" class="form-control" id="regFullName" required>
+                                <div class="text-center">
+                                    <div class="mb-4">
+                                        <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                                        <h4 class="text-primary" data-translate="comprehensive_registration">
+                                            Comprehensive Registration</h4>
+                                        <p class="text-muted" data-translate="registration_description">
+                                            Complete your detailed registration to access all government benefits and
+                                            services across states.
+                                        </p>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label for="regAadhaar" class="form-label" data-translate="aadhaar_label">
-                                            <i class="fas fa-id-card me-2"></i>Aadhaar Number
-                                        </label>
-                                        <input type="text" class="form-control" id="regAadhaar"
-                                            placeholder="1234 5678 9012" maxlength="14" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="regPassword" class="form-label" data-translate="password_label">
-                                            <i class="fas fa-lock me-2"></i>Password
-                                        </label>
-                                        <div class="input-group">
-                                            <input type="password" class="form-control" id="regPassword" minlength="6"
-                                                required>
-                                            <button class="btn btn-outline-secondary" type="button"
-                                                id="toggleRegPassword" title="Toggle password visibility">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </div>
-                                        <div class="form-text" data-translate="password_help">Minimum 6 characters</div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="regPhone" class="form-label" data-translate="phone_label">
-                                            <i class="fas fa-phone me-2"></i>Phone Number
-                                        </label>
-                                        <input type="tel" class="form-control" id="regPhone"
-                                            placeholder="+91 98765 43210" required>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="regHomeState" class="form-label"
-                                                data-translate="home_state_label">
-                                                <i class="fas fa-home me-2"></i>Home State
-                                            </label>
-                                            <select class="form-select" id="regHomeState" required>
-                                                <option value="">Select State</option>
-                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                                <option value="Bihar">Bihar</option>
-                                                <option value="Gujarat">Gujarat</option>
-                                                <option value="Karnataka">Karnataka</option>
-                                                <option value="Kerala">Kerala</option>
-                                                <option value="Maharashtra">Maharashtra</option>
-                                                <option value="Rajasthan">Rajasthan</option>
-                                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                                <option value="West Bengal">West Bengal</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="regCurrentState" class="form-label"
-                                                data-translate="current_state_label">
-                                                <i class="fas fa-map-marker-alt me-2"></i>Current State
-                                            </label>
-                                            <select class="form-select" id="regCurrentState" required>
-                                                <option value="">Select State</option>
-                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                                <option value="Bihar">Bihar</option>
-                                                <option value="Delhi">Delhi</option>
-                                                <option value="Gujarat">Gujarat</option>
-                                                <option value="Karnataka">Karnataka</option>
-                                                <option value="Kerala">Kerala</option>
-                                                <option value="Maharashtra">Maharashtra</option>
-                                                <option value="Rajasthan">Rajasthan</option>
-                                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                                <option value="West Bengal">West Bengal</option>
-                                            </select>
+                                    <div class="mb-4">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <i class="fas fa-clipboard-list fa-2x text-primary mb-2"></i>
+                                                <p class="small text-muted">Detailed Form</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="fas fa-qrcode fa-2x text-success mb-2"></i>
+                                                <p class="small text-muted">QR Identity</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="fas fa-shield-alt fa-2x text-info mb-2"></i>
+                                                <p class="small text-muted">Secure Access</p>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-success w-100 mb-3" id="registerBtn">
-                                        <i class="fas fa-user-plus me-2"></i><span
-                                            data-translate="register_button">Create Account</span>
-                                    </button>
-                                </form>
+                                    <a href="registration-form.html" class="btn btn-success btn-lg w-100 mb-3">
+                                        <i class="fas fa-arrow-right me-2"></i><span
+                                            data-translate="start_registration">Start Registration</span>
+                                    </a>
+
+                                    <div class="alert alert-info text-start">
+                                        <strong><i class="fas fa-info-circle me-2"></i>What you'll provide:</strong>
+                                        <ul class="mb-0 mt-2">
+                                            <li>Personal & family information</li>
+                                            <li>Income & employment details</li>
+                                            <li>Housing & assets information</li>
+                                            <li>Migration history</li>
+                                            <li>Social category & special circumstances</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
